@@ -96,6 +96,9 @@ framework = arduino
 
 書き込みは、EK-RA6M5のUSB HIGH SPEED (J31) のUSBと書き込み用PCのUSBを接続します。
 
+![IMG_9809](https://github.com/user-attachments/assets/795ec467-393e-45db-809a-93fabcc94d85)
+
+
 <br>
 
 ## (参考) TinyUSB の取得とパッチ適用手順
