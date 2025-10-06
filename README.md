@@ -4,8 +4,6 @@
 
 ## 概要
 - 対象ボード: EK-RA6M5
-- ブート領域: 0x00000000（ブートローダ書き込み先）
-- アプリ開始: 0x00010000（64 KB、`SKETCH_FLASH_OFFSET`）
 
 ## J-Link のインストール（Ubuntu 22.04）
 - SEGGER 公式の .deb パッケージを使用します。以下はライセンス同意を含んだダウンロード手順です。
@@ -61,15 +59,10 @@ printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin
 
 ### JTAG書き込み（J-Link）と検証
 本リポジトリの `Makefile.c33` に J-Link 用のターゲットを追加しました。
-- 追加ターゲット:
-  - `flash`（書き込み）
-  - `flash_verify`（書き込み＋読み出し比較による検証）
-- 既定の動作: `JLinkExe` が見つかればそれを使用します（OpenOCDはガイダンスのみ）。
-- 指定可能な変数（必要に応じて上書きしてください）:
-  - `JLINK_DEVICE`: 既定 `RA6M5`。Portenta C33 では `R7FA6M5BH` の指定が確実でした。
-  - `JLINK_IF`: 既定 `SWD`
-  - `JLINK_SPEED`: 既定 `4000`（kHz）
-  - `JLINK_SN`: 使用するJ-Linkのシリアル番号（複数接続時に指定）
+
+EK-RA6M5のDEBUG1 (J10) のUSBと書き込み用PCのUSBを接続します。
+
+![IMG_9808](https://github.com/user-attachments/assets/f00d3726-7cd3-4eca-809b-55211ecd3e80)
 
 ### 実行例
 1. 接続確認（J-Linkに同梱の Commander でエミュレータ列挙）
@@ -100,6 +93,8 @@ framework = arduino
 
 ソースコードは[Portenta C33 User Manual
 ](https://docs.arduino.cc/tutorials/portenta-c33/user-manual)を参考にしてください。
+
+書き込みは、EK-RA6M5のUSB HIGH SPEED (J31) のUSBと書き込み用PCのUSBを接続します。
 
 <br>
 
