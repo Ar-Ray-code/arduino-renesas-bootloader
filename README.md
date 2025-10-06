@@ -19,7 +19,6 @@ curl -L -o JLink_Linux_x86_64.deb \
 
 sudo dpkg -i ./JLink_Linux_x86_64.deb || sudo apt-get -y -f install
 
-# udev ルールの反映（通常は自動で実行されますが、念のため）
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
@@ -31,9 +30,8 @@ printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin
 ```
 
 ### 注意
-- インストールにより `/usr/bin/JLinkExe` 等のシンボリックリンクが作成されます。
 - 初回はUSBの再挿抜、もしくはホスト再起動が必要な場合があります。
-- 権限周りの問題がある場合は、現在のユーザーが `plugdev` 等に属しているかをご確認ください。
+- `plugdev` グループへの所属が必要です。
 
 ## ブートローダーのビルドと書き込み
 ### 事前準備（TinyUSB の取得とパッチ適用）
@@ -57,9 +55,7 @@ printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin
   - `./compile.sh`
   - `distrib/dfu_c33.hex` などが生成されます
 
-### JTAG書き込み（J-Link）と検証
-本リポジトリの `Makefile.c33` に J-Link 用のターゲットを追加しました。
-
+### JTAG書き込み（J-Link）
 EK-RA6M5のDEBUG1 (J10) のUSBと書き込み用PCのUSBを接続します。
 
 ![IMG_9808](https://github.com/user-attachments/assets/f00d3726-7cd3-4eca-809b-55211ecd3e80)
@@ -73,7 +69,7 @@ EK-RA6M5のDEBUG1 (J10) のUSBと書き込み用PCのUSBを接続します。
 
 ### PlatformIO での利用
 
-- DFUモードでのUSB接続に必要です。`/etc/udev/rules.d/` に配置し、`sudo udevadm control --reload-rules && sudo udevadm trigger` を実行してください。
+- DFUモードでのUSB接続に必要です。[99-arduino-dfu.rules](rules/99-arduino-dfu.rules)を`/etc/udev/rules.d/` に配置し、`sudo udevadm control --reload-rules && sudo udevadm trigger` を実行してください。
 
 `platformio.ini` の例: 
 
