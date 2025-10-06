@@ -1,4 +1,4 @@
-# Arduino Renesas ブートローダー（C33/JTAG対応、日本語版）
+# Arduino Renesas ブートローダー
 
 このリポジトリでは、EK-RA6M5をPortenta C33（RA6M5）として使用するためのArduino RenesasブートローダーのビルドとJTAG書き込み手順を説明します。
 
@@ -17,16 +17,13 @@ curl -L -o JLink_Linux_x86_64.deb \
   --data "accept_license_agreement=accepted&non_emb_ctr=confirmed" \
   https://www.segger.com/downloads/jlink/JLink_Linux_x86_64.deb
 
-sudo dpkg -i ./JLink_Linux_x86_64.deb || sudo apt-get -y -f install
+sudo apt install ./JLink_Linux_x86_64.deb
 
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
 # バージョン確認
 JLinkExe -NoGui 1 || true
-
-# 接続確認（接続中のエミュレータ一覧を表示）
-printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin
 ```
 
 ### 注意
@@ -34,38 +31,36 @@ printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin
 - `plugdev` グループへの所属が必要です。
 
 ## ブートローダーのビルドと書き込み
-### 事前準備（TinyUSB の取得とパッチ適用）
-1. リポジトリ取得
-   - `git clone https://github.com/arduino/arduino-renesas-bootloader`
-   - `git clone https://github.com/hathach/tinyusb.git`
-2. TinyUSB のセットアップ
-   - `cd tinyusb`
-   - `git checkout 0.17.0`
-   - `python3 ./tools/get_deps.py ra`
-   - `export TINYUSB_ROOT=$PWD`
-   - `patch -p1 < ../arduino-renesas-bootloader/0001-fix-arduino-bootloaders.patch`
-3. 本リポジトリに戻る
-   - `cd ../arduino-renesas-bootloaders`（あるいは適切なパス）
 
-### ビルド（Portenta C33として）
-- 単体ビルド（C33のみ）
-  - `make -f Makefile.c33 -j$(nproc)`
-  - 生成物: `_build/portenta_c33/arduino-renesas-bootloader.hex` および `.bin`
-- 一括ビルド（配布用）
-  - `./compile.sh`
-  - `distrib/dfu_c33.hex` などが生成されます
-
-### JTAG書き込み（J-Link）
 EK-RA6M5のDEBUG1 (J10) のUSBと書き込み用PCのUSBを接続します。
 
 ![IMG_9808](https://github.com/user-attachments/assets/f00d3726-7cd3-4eca-809b-55211ecd3e80)
 
-### 実行例
-1. 接続確認（J-Linkに同梱の Commander でエミュレータ列挙）
-   - `printf "ShowEmuList\nq\n" | JLinkExe -NoGui 1 -CommandFile /dev/stdin`
-2. 書き込み＋検証（OB-S124 の例。SNは適宜置き換えてください）
-   - `make -f Makefile.c33 JLINK_DEVICE=R7FA6M5BH JLINK_SN=831782252 flash_verify`
-   - 先頭アドレス `0x00000000` に書き込み、書き込み後にフラッシュ先頭を `savebin` で読み出し、ローカルの `.bin` とバイト比較します。
+```bash
+# Clone TinyUSB, arduino-renesas-bootloader
+git clone https://github.com/hathach/tinyusb.git
+git clone https://github.com/Ar-Ray-code/arduino-renesas-bootloader.git
+
+# Apply patch to TinyUSB
+cd tinyusb
+git checkout 0.17.0
+python3 ./tools/get_deps.py ra
+export TINYUSB_ROOT=$PWD
+patch -p1 < ../arduino-renesas-bootloader/0001-fix-arduino-bootloaders.patch
+
+# back to arduino-renesas-bootloader
+cd ../arduino-renesas-bootloader
+
+./compile.sh
+```
+
+JFlashLiteで書き込みます。
+
+```bash
+JFlashLite
+```
+
+
 
 ### PlatformIO での利用
 
