@@ -2,7 +2,6 @@
 
 このリポジトリでは、EK-RA6M5をPortenta C33（RA6M5）として使用するためのArduino RenesasブートローダーのビルドとJTAG書き込み手順を説明します。
 
-## 概要
 - 対象ボード: EK-RA6M5
 
 ## J-Link のインストール（Ubuntu 22.04）
