@@ -60,13 +60,33 @@ JFlashLiteで書き込みます。
 JFlashLite
 ```
 
+JFlashLiteを起動すると、次のような画面が出ます。OKを押します。
 
+<img width="485" height="374" alt="Screenshot from 2025-10-06 22-23-30" src="https://github.com/user-attachments/assets/d070c7eb-56b2-4f17-94f1-1f1340b87e43" />
+
+デバイスの特定に失敗した場合は、 "Target Device" の横の "…" をクリックして、対象となるボードを選択します。
+
+<img width="600" height="499" alt="Screenshot from 2025-10-06 22-23-23" src="https://github.com/user-attachments/assets/adff0c5a-88f6-4a19-8d89-e3fb52c3e60a" />
+
+"Data File" を選択できるようになるので、生成されたhex（ここでは "dfu_c33.hex"）を選択します。
+
+<img width="549" height="661" alt="image" src="https://github.com/user-attachments/assets/0b31e2ff-436f-4c90-850a-7bb8816aa08f" />
+
+"Program Device" を押して書き込みます。 
+
+<img width="559" height="675" alt="image" src="https://github.com/user-attachments/assets/9467ad3b-1992-4365-8d7e-69ccb907470d" />
+
+"Done." と出たら終了です。画面を閉じます。
 
 ### PlatformIO での利用
 
 - DFUモードでのUSB接続に必要です。[99-arduino-dfu.rules](rules/99-arduino-dfu.rules)を`/etc/udev/rules.d/` に配置し、`sudo udevadm control --reload-rules && sudo udevadm trigger` を実行してください。
 
-`platformio.ini` の例: 
+`lsusb` で確認すると、 `2341:0368 Arduino SA Portenta C33 DFU` と出てきます。
+
+<img width="800" height="155" alt="image" src="https://github.com/user-attachments/assets/34cb08f6-033a-4ec9-8639-2ed34434fb51" />
+
+platformio.iniの例: 
 
 ```ini
 [env:portenta_c33]
