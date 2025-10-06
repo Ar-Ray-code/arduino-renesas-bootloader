@@ -54,6 +54,8 @@ cd ../arduino-renesas-bootloader
 ./compile.sh
 ```
 
+[99-arduino-dfu.rules](rules/99-arduino-dfu.rules)を`/etc/udev/rules.d/` に配置し、`sudo udevadm control --reload-rules && sudo udevadm trigger` を実行してください。
+
 JFlashLiteで書き込みます。
 
 ```bash
@@ -78,13 +80,38 @@ JFlashLiteを起動すると、次のような画面が出ます。OKを押し�
 
 "Done." と出たら終了です。画面を閉じます。
 
+
+
 ### PlatformIO での利用
 
-- DFUモードでのUSB接続に必要です。[99-arduino-dfu.rules](rules/99-arduino-dfu.rules)を`/etc/udev/rules.d/` に配置し、`sudo udevadm control --reload-rules && sudo udevadm trigger` を実行してください。
+書き込みは、EK-RA6M5のUSB HIGH SPEED (J31) のUSBと書き込み用PCのUSBを接続します。
+
+![IMG_9809](https://github.com/user-attachments/assets/795ec467-393e-45db-809a-93fabcc94d85)
 
 `lsusb` で確認すると、 `2341:0368 Arduino SA Portenta C33 DFU` と出てきます。
 
 <img width="800" height="155" alt="image" src="https://github.com/user-attachments/assets/34cb08f6-033a-4ec9-8639-2ed34434fb51" />
+
+次にプログラムを書きます。通常のLチカのコードを書きます。
+
+> C33と割当が違うので注意してください。LEDを別途用意してP400に配線します。
+
+src/main.cpp
+
+```c
+#include <Arduino.h>
+
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT); // P400
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(100);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(100);
+}
+```
 
 platformio.iniの例: 
 
@@ -102,12 +129,11 @@ board_build.f_cpu = 200000000L
 framework = arduino
 ```
 
-ソースコードは[Portenta C33 User Manual
+platformioの書き込みコマンド `pio run --target upload` で書き込みます。
+
+> ソースコードは[Portenta C33 User Manual
 ](https://docs.arduino.cc/tutorials/portenta-c33/user-manual)を参考にしてください。
 
-書き込みは、EK-RA6M5のUSB HIGH SPEED (J31) のUSBと書き込み用PCのUSBを接続します。
-
-![IMG_9809](https://github.com/user-attachments/assets/795ec467-393e-45db-809a-93fabcc94d85)
 
 
 <br>
